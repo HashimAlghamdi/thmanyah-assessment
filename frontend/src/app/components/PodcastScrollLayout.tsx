@@ -38,11 +38,11 @@ export default function PodcastScrollLayout({
   const scrollLeft = () => {
     const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
     if (scrollArea) {
-      // Calculate scroll distance based on visible podcasts
+      // Calculate scroll distance based on visible podcasts - responsive widths
       const containerWidth = scrollArea.clientWidth;
-      const podcastWidth = 192 + 16; // w-48 (192px) + gap-4 (16px)
+      const podcastWidth = window.innerWidth < 768 ? 160 + 12 : 192 + 16; // Smaller on mobile
       const visiblePodcasts = Math.floor(containerWidth / podcastWidth);
-      const scrollDistance = visiblePodcasts * podcastWidth;
+      const scrollDistance = Math.max(visiblePodcasts * podcastWidth, podcastWidth);
       
       scrollArea.scrollBy({ left: scrollDistance, behavior: 'smooth' });
     }
@@ -51,11 +51,11 @@ export default function PodcastScrollLayout({
   const scrollRight = () => {
     const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
     if (scrollArea) {
-      // Calculate scroll distance based on visible podcasts
+      // Calculate scroll distance based on visible podcasts - responsive widths
       const containerWidth = scrollArea.clientWidth;
-      const podcastWidth = 192 + 16; // w-48 (192px) + gap-4 (16px)
+      const podcastWidth = window.innerWidth < 768 ? 160 + 12 : 192 + 16; // Smaller on mobile
       const visiblePodcasts = Math.floor(containerWidth / podcastWidth);
-      const scrollDistance = visiblePodcasts * podcastWidth;
+      const scrollDistance = Math.max(visiblePodcasts * podcastWidth, podcastWidth);
       
       scrollArea.scrollBy({ left: -scrollDistance, behavior: 'smooth' });
     }
@@ -70,8 +70,18 @@ export default function PodcastScrollLayout({
       scrollArea.addEventListener('scroll', handleScroll);
       window.addEventListener('resize', handleResize);
       
-      // Initial check
-      setTimeout(checkScrollability, 100);
+      // Set initial scroll position to rightmost (start position for RTL)
+      const setInitialPosition = () => {
+        if (scrollArea.scrollWidth > scrollArea.clientWidth) {
+          scrollArea.scrollLeft = scrollArea.scrollWidth - scrollArea.clientWidth;
+        }
+        checkScrollability();
+      };
+      
+      // Try multiple times to ensure content is loaded
+      setTimeout(setInitialPosition, 50);
+      setTimeout(setInitialPosition, 200);
+      setTimeout(setInitialPosition, 500);
       
       return () => {
         scrollArea.removeEventListener('scroll', handleScroll);
@@ -93,13 +103,14 @@ export default function PodcastScrollLayout({
   return (
     <ScrollArea
       ref={scrollAreaRef}
-      className="max-w-[85vw] whitespace-nowrap"
+      className="max-w-[95vw] md:max-w-[90vw] lg:max-w-[85vw] whitespace-nowrap"
+      dir="rtl"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="flex gap-4 pb-4">
+      <div className="flex gap-3 md:gap-4 pb-4">
         {podcasts.map((podcast) => (
-          <div key={podcast.id} className="flex-shrink-0 w-48">
+          <div key={podcast.id} className="flex-shrink-0 w-40 md:w-48">
             <PodcastCard
               id={podcast.id}
               title={podcast.title}
