@@ -1,17 +1,13 @@
-import PodcastCard from './PodcastCard';
-
-interface Podcast {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-}
+import { Podcast } from "../interfaces/Podcast";
+import PodcastCard from "./PodcastCard";
 
 interface PodcastGridLayoutProps {
   podcasts: Podcast[];
 }
 
-export default function PodcastGridLayout({ podcasts }: PodcastGridLayoutProps) {
+export default function PodcastGridLayout({
+  podcasts,
+}: PodcastGridLayoutProps) {
   return (
     <div className="grid grid-cols-7 gap-4">
       {podcasts.map((podcast) => (
@@ -25,4 +21,4 @@ export default function PodcastGridLayout({ podcasts }: PodcastGridLayoutProps) 
       ))}
     </div>
   );
-} 
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import PodcastCard from "./PodcastCard";
 import PodcastScrollLayout from "./PodcastScrollLayout";
 import PodcastGridLayout from "./PodcastGridLayout";
@@ -10,13 +11,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-interface Podcast {
-  id: number;
-  title: string;
-  subtitle: string;
-  description: string;
-}
+import { Podcast } from "../interfaces/Podcast";
 
 interface TopPodcastsProps {
   podcasts: Podcast[];
@@ -25,29 +20,55 @@ interface TopPodcastsProps {
 export default function TopPodcasts({ podcasts }: TopPodcastsProps) {
   const { layout, setLayout } = useLayout();
 
+  const [scrollTrigger, setScrollTrigger] = useState<number | undefined>(
+    undefined
+  );
+
+  const handleScrollLeft = () => {
+    setScrollTrigger(Date.now() * -1);
+  };
+
+  const handleScrollRight = () => {
+    setScrollTrigger(Date.now());
+  };
+
   return (
     <section className="mb-12">
       <div className="flex items-center justify-between mb-6 pb-4 border-b border-gray-800">
         <h2 className="text-2xl font-bold">أفضل البودكاست لـ شد</h2>
         <div className="flex space-x-2">
-          <button className="p-2 hover:bg-gray-800 rounded">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-          <button className="p-2 hover:bg-gray-800 rounded">
-            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
+          {layout === "scroll" && (
+            <button
+              className={
+                "p-2 rounded transition-colors  hover:bg-gray-800 text-white"
+              }
+              onClick={handleScrollLeft}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          )}
+          {layout === "scroll" && (
+            <button
+              className={
+                "p-2 rounded transition-colors  hover:bg-gray-800 text-white"
+              }
+              onClick={handleScrollRight}
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </button>
+          )}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <button className="p-2 hover:bg-gray-800 rounded">
@@ -106,7 +127,10 @@ export default function TopPodcasts({ podcasts }: TopPodcastsProps) {
       </div>
 
       {layout === "scroll" ? (
-        <PodcastScrollLayout podcasts={podcasts} />
+        <PodcastScrollLayout
+          podcasts={podcasts}
+          scrollTrigger={scrollTrigger}
+        />
       ) : (
         <PodcastGridLayout podcasts={podcasts} />
       )}
