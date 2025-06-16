@@ -1,6 +1,6 @@
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== "undefined" ? "/api" : "http://localhost:3001");
+  "https://il0vt0sm3j.execute-api.us-east-1.amazonaws.com/dev";
 
 import { Podcast } from '../interfaces/Podcast';
 

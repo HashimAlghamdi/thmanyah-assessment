@@ -5,40 +5,17 @@ import { Podcast } from "../interfaces/Podcast";
 
 interface PodcastScrollLayoutProps {
   podcasts: Podcast[];
-  onScrollStateChange?: (
-    canScrollLeft: boolean,
-    canScrollRight: boolean
-  ) => void;
+
   scrollTrigger?: number;
 }
 
 export default function PodcastScrollLayout({
   podcasts,
-  onScrollStateChange,
+
   scrollTrigger,
 }: PodcastScrollLayoutProps) {
   const [isHovered, setIsHovered] = useState(false);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(false);
-
-  const checkScrollability = () => {
-    const scrollArea = scrollAreaRef.current?.querySelector(
-      "[data-radix-scroll-area-viewport]"
-    ) as HTMLElement;
-    if (scrollArea) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollArea;
-      const newCanScrollLeft = scrollLeft > 0;
-      const newCanScrollRight = scrollLeft < scrollWidth - clientWidth - 1;
-
-      setCanScrollLeft(newCanScrollLeft);
-      setCanScrollRight(newCanScrollRight);
-
-      if (onScrollStateChange) {
-        onScrollStateChange(newCanScrollLeft, newCanScrollRight);
-      }
-    }
-  };
 
   const scrollLeft = () => {
     const scrollArea = scrollAreaRef.current?.querySelector(
@@ -75,38 +52,6 @@ export default function PodcastScrollLayout({
       scrollArea.scrollBy({ left: -scrollDistance, behavior: "smooth" });
     }
   };
-
-  useEffect(() => {
-    const scrollArea = scrollAreaRef.current?.querySelector(
-      "[data-radix-scroll-area-viewport]"
-    ) as HTMLElement;
-    if (scrollArea) {
-      const handleScroll = () => checkScrollability();
-      const handleResize = () => checkScrollability();
-
-      scrollArea.addEventListener("scroll", handleScroll);
-      window.addEventListener("resize", handleResize);
-
-      // Set initial scroll position to rightmost (start position for RTL)
-      const setInitialPosition = () => {
-        if (scrollArea.scrollWidth > scrollArea.clientWidth) {
-          scrollArea.scrollLeft =
-            scrollArea.scrollWidth - scrollArea.clientWidth;
-        }
-        checkScrollability();
-      };
-
-      // Try multiple times to ensure content is loaded
-      setTimeout(setInitialPosition, 50);
-      setTimeout(setInitialPosition, 200);
-      setTimeout(setInitialPosition, 500);
-
-      return () => {
-        scrollArea.removeEventListener("scroll", handleScroll);
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, [podcasts]);
 
   useEffect(() => {
     if (scrollTrigger !== undefined) {
