@@ -1,7 +1,6 @@
 export interface Podcast {
   id: number;
   title: string;
-  subtitle: string;
-  description: string;
+  artistName: string;
   image?: string;
 }

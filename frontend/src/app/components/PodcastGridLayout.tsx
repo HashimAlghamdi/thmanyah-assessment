@@ -15,8 +15,7 @@ export default function PodcastGridLayout({
           key={podcast.id}
           id={podcast.id}
           title={podcast.title}
-          subtitle={podcast.subtitle}
-          description={podcast.description}
+          artistName={podcast.artistName}
           image={podcast.image}
         />
       ))}

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from 'react';
-import { apiClient, SearchPodcast } from '../lib/api';
+import { apiClient } from '../lib/api';
 import { Podcast } from '../interfaces/Podcast';
 
 interface SearchContextType {
@@ -19,15 +19,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Convert SearchPodcast to Podcast interface
-  const convertToPodcast = (searchPodcast: SearchPodcast): Podcast => ({
-    id: searchPodcast.id,
-    title: searchPodcast.name,
-    subtitle: searchPodcast.artistName,
-    description: searchPodcast.name,
-    image: searchPodcast.artworkUrl600
-  });
-
   const performSearch = useCallback(async (term: string) => {
     if (!term.trim()) {
       clearSearch();
@@ -40,10 +31,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     try {
       const response = await apiClient.search(term);
       
-      // Convert API response to proper interfaces
-      const convertedPodcasts = response.podcasts.map(convertToPodcast);
-      
-      setSearchResults(convertedPodcasts);
+      // No conversion needed - interfaces match directly
+      setSearchResults(response.podcasts);
       
       if (response.error) {
         setError(response.error);

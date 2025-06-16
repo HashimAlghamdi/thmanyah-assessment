@@ -132,8 +132,7 @@ export default function PodcastScrollLayout({
             <PodcastCard
               id={podcast.id}
               title={podcast.title}
-              subtitle={podcast.subtitle}
-              description={podcast.description}
+              artistName={podcast.artistName}
               image={podcast.image}
             />
           </div>

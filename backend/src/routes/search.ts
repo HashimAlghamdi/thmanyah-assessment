@@ -7,14 +7,16 @@ export default async function (fastify: FastifyInstance) {
 
     try {
       // Search for podcasts only
-      const podcastsResponse = await axios.get("https://itunes.apple.com/search", {
-        params: {
-          term,
-          media: "podcast",
-          attribute: "titleTerm", // More specific search for podcast titles
-          limit: 20,
-        },
-      });
+      const podcastsResponse = await axios.get(
+        "https://itunes.apple.com/search",
+        {
+          params: {
+            term,
+            media: "podcast",
+            attribute: "titleTerm", // More specific search for podcast titles
+          },
+        }
+      );
 
       const podcasts = podcastsResponse.data.results || [];
 
@@ -40,17 +42,25 @@ export default async function (fastify: FastifyInstance) {
         })
       );
 
-      // Return structured response with podcasts only
+      // Transform to clean API response with only necessary fields
+      const cleanPodcasts = savedPodcasts
+        .filter(Boolean)
+        .map((podcast) => ({
+          id: podcast.id,
+          title: podcast.name,
+          artistName: podcast.artistName,
+          image: podcast.artworkUrl600,
+        }));
+
+      // Return only what frontend needs
       res.send({
-        podcasts: savedPodcasts.filter(Boolean),
-        searchTerm: term,
+        podcasts: cleanPodcasts,
       });
     } catch (error) {
       fastify.log.error(error);
-      res.status(500).send({ 
-        error: "Search failed",
+      res.status(500).send({
+        error: "فشل في البحث",
         podcasts: [],
-        searchTerm: term 
       });
     }
   });

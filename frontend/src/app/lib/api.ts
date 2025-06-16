@@ -1,21 +1,11 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || (
-  typeof window !== 'undefined' ? '/api' : 'http://localhost:3001'
-);
+const API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== "undefined" ? "/api" : "http://localhost:3001");
 
-export interface SearchPodcast {
-  id: number;
-  itunesId: number;
-  name: string;
-  artistName: string;
-  artworkUrl600: string;
-  feedUrl: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import { Podcast } from '../interfaces/Podcast';
 
 export interface SearchResponse {
-  podcasts: SearchPodcast[];
-  searchTerm: string;
+  podcasts: Podcast[];
   error?: string;
 }
 
@@ -30,34 +20,35 @@ export class ApiClient {
     if (!term.trim()) {
       return {
         podcasts: [],
-        searchTerm: term,
       };
     }
 
     try {
       const response = await fetch(`${this.baseUrl}/search`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ term }),
       });
 
       if (!response.ok) {
-        throw new Error(`Search failed: ${response.statusText}`);
+        if (response.status === 500) {
+          throw new Error("فشل في البحث: خطأ في الاتصال بالخادم");
+        }
+        throw new Error(`فشل في البحث: ${response.statusText}`);
       }
 
       const data = await response.json();
       return {
         podcasts: data.podcasts || [],
-        searchTerm: data.searchTerm || term,
         error: data.error,
       };
     } catch (error) {
-      console.error('Search API error:', error);
+      console.error("Search API error:", error);
       throw error;
     }
   }
 }
 
-export const apiClient = new ApiClient(); 
+export const apiClient = new ApiClient();
