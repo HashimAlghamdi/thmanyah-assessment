@@ -36,10 +36,15 @@ export const handler = async (
     payload: event.body || undefined, // Convert null to undefined
   });
 
-  // Return API Gateway compatible response
+  // Return API Gateway compatible response with CORS headers
   return {
     statusCode: response.statusCode,
-    headers: response.headers as { [key: string]: string },
+    headers: {
+      ...response.headers as { [key: string]: string },
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    },
     body: response.body,
   };
 };

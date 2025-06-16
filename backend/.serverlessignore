@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+!node_modules/@prisma/client/**
+!node_modules/.prisma/**
+
+# Source files
+src/
+*.ts
+tsconfig.json
+
+# Development files
+.env*
+*.log
+.DS_Store
+.git/
+*.md
+README.md
+
+# Build artifacts
+*.tsbuildinfo
+
+# Testing
+test/
+tests/
+*.test.js
+*.spec.js
+
+# Documentation
+docs/ 

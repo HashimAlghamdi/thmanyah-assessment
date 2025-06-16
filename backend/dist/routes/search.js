@@ -38,20 +38,18 @@ async function default_1(fastify) {
                     return null;
                 }
             }));
-            // Transform to clean API response with consistent field names
+            // Transform to clean API response with only necessary fields
             const cleanPodcasts = savedPodcasts
                 .filter(Boolean)
                 .map((podcast) => ({
                 id: podcast.id,
                 title: podcast.name,
-                subtitle: podcast.artistName,
-                description: podcast.name, // Using name as description for now
+                artistName: podcast.artistName,
                 image: podcast.artworkUrl600,
             }));
-            // Return structured response with podcasts only
+            // Return only what frontend needs
             res.send({
                 podcasts: cleanPodcasts,
-                searchTerm: term,
             });
         }
         catch (error) {
@@ -59,7 +57,6 @@ async function default_1(fastify) {
             res.status(500).send({
                 error: "فشل في البحث",
                 podcasts: [],
-                searchTerm: term,
             });
         }
     });
