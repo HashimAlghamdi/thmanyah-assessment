@@ -105,6 +105,45 @@ body {
 
 /* Hide scrollbar for scroll layout */
 
+/* Mobile-specific fixes for podcast images and scroll layout */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific fixes */
+  .aspect-square img {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+}
+
+/* Fix for mobile image rendering issues */
+@media (max-width: 768px) {
+  .aspect-square {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Prevent layout shift on mobile */
+  .aspect-square img,
+  .aspect-square .next-image {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+  }
+  
+  /* Improve scroll performance on mobile */
+  [data-radix-scroll-area-viewport] {
+    -webkit-overflow-scrolling: touch;
+    will-change: scroll-position;
+  }
+  
+  /* Fix for mobile touch issues */
+  .cursor-pointer {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+}
 
 .dark {
   --background: oklch(0.145 0 0);

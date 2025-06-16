@@ -1,14 +1,21 @@
 import { Podcast } from "../interfaces/Podcast";
+import Image from "next/image";
 
 export default function PodcastCard({ title, artistName, image }: Podcast) {
   return (
     <div className="bg-gray-800 rounded-lg p-3 md:p-4 hover:bg-gray-750 transition-colors cursor-pointer group">
-      <div className="aspect-square bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg mb-3 md:mb-4 flex items-center justify-center overflow-hidden">
+      <div className="aspect-square bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg mb-3 md:mb-4 flex items-center justify-center overflow-hidden relative">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
+            fill
+            sizes="(max-width: 768px) 160px, 192px"
+            className="object-cover group-hover:scale-105 transition-transform duration-200"
+            quality={85}
+            priority={false}
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
           />
         ) : (
           <svg
