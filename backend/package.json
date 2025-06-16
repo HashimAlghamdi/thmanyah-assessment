@@ -7,10 +7,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "studio": "npx prisma studio",
-    "docker:build": "docker build -t thmanyah-backend .",
-    "docker:run": "docker run -p 3001:3001 --env-file .env thmanyah-backend",
-    "deploy:build": "npm run build && npx prisma generate",
-    "deploy:migrate": "npx prisma db push"
+    "deploy": "npm run build && sls deploy",
+    "deploy:prod": "npm run build && sls deploy --stage prod"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +17,7 @@
   "dependencies": {
     "@prisma/client": "^6.9.0",
     "@types/xml2js": "^0.4.14",
+    "aws-lambda": "^1.0.7",
     "axios": "^1.10.0",
     "fastify": "^5.4.0",
     "fastify-plugin": "^5.0.1",
@@ -26,8 +25,11 @@
     "xml2js": "^0.6.2"
   },
   "devDependencies": {
+    "@types/aws-lambda": "^8.10.143",
     "@types/node": "^24.0.1",
     "prisma": "^6.9.0",
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.8.3"
   }
