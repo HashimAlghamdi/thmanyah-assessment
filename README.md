@@ -123,7 +123,7 @@ The search functionality follows this flow:
 
 ### Search Active
 - User types in search bar
-- URL updates with query parameter: `http://localhost:3000/?q=search-term`
+- URL updates with query parameter: `http://localhost:3000/search?q=search-term`
 - TopPodcasts component displays search results
 - Custom title: "نتائج البحث عن 'search-term'"
 - Loading, error, and empty states handled within TopPodcasts
