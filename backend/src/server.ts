@@ -5,13 +5,11 @@ import searchRoutes from "./routes/search";
 export const buildServer = () => {
   const fastify = Fastify({ 
     logger: true,
-    trustProxy: true // Required for rate limiting behind proxy/Lambda
+    trustProxy: true
   });
-
-  // Register rate limiting
   fastify.register(import('@fastify/rate-limit'), {
-    max: 100, // Maximum 100 requests
-    timeWindow: '1 minute', // Per minute
+    max: 100,
+    timeWindow: '1 minute',
     errorResponseBuilder: function (request, context) {
       return {
         code: 429,

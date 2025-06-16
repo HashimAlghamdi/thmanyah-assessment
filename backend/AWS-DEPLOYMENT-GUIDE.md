@@ -16,7 +16,7 @@ This guide will help you deploy your Node.js/TypeScript backend to AWS completel
 3. **Node.js** (18.x or later)
 4. **Serverless Framework**
 
-## 🚀 Step-by-Step Deployment
+## Step-by-Step Deployment
 
 ### Step 1: Setup AWS Account & CLI
 
@@ -103,35 +103,35 @@ After deployment, update your RDS security group to only allow connections from 
 3. Remove the 0.0.0.0/0 rule
 4. Add your Lambda function's security group
 
-## 🎉 Your API is Live!
+## Your API is Live!
 
 After deployment, you'll get an endpoint like:
 ```
 https://xxxxxxxxxx.execute-api.us-east-1.amazonaws.com/dev
 ```
 
-## 💰 Free Tier Limits
+## Free Tier Limits
 
 - **Lambda**: 1M requests/month + 400,000 GB-seconds compute
 - **API Gateway**: 1M REST API calls/month  
 - **RDS**: 750 hours/month of t3.micro + 20GB storage
 - **Data Transfer**: 1GB/month out to internet
 
-## 🔧 Cost Optimization Tips
+## Cost Optimization Tips
 
 1. **Use Lambda wisely** - It only runs when needed
 2. **Monitor usage** - Set up billing alerts
 3. **Database connections** - Use connection pooling
 4. **Clean up unused resources** - Delete when done
 
-## 🚨 Important Notes
+## Important Notes
 
 - RDS will be your main cost after free tier
 - Consider using serverless databases for truly free solutions
 - Monitor your AWS billing dashboard regularly
 - Set up billing alerts for $1, $5, $10
 
-## 🔄 Alternative Free Options
+## Alternative Free Options
 
 If you want completely free (no database costs):
 
@@ -156,7 +156,7 @@ flyctl launch
 flyctl deploy
 ```
 
-## 🆘 Troubleshooting
+## Troubleshooting
 
 ### Common Issues:
 1. **Lambda timeout** - Increase timeout in serverless.yml
@@ -164,11 +164,11 @@ flyctl deploy
 3. **Build errors** - Ensure TypeScript compiles correctly
 4. **CORS issues** - Check API Gateway CORS settings
 
-## 📞 Support
+## Support
 
 If you encounter issues:
 1. Check AWS CloudWatch logs
 2. Use `sls logs -f api` for Lambda logs
 3. Test locally with `sls offline`
 
-Your backend is now deployed on AWS for free! 🎉 
+Your backend is now deployed on AWS for free! 

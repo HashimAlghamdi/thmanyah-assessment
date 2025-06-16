@@ -45,10 +45,6 @@ export class ApiClient {
         error: data.error,
       };
     } catch (error) {
-      // Log error without sensitive details in production
-    if (process.env.NODE_ENV === 'development') {
-      console.error("Search API error:", error);
-    }
       throw error;
     }
   }

@@ -2,7 +2,6 @@ import { FastifyInstance } from "fastify";
 import axios from "axios";
 
 export default async function (fastify: FastifyInstance) {
-  // Add JSON schema validation
   const searchSchema = {
     body: {
       type: 'object',
@@ -12,7 +11,7 @@ export default async function (fastify: FastifyInstance) {
           type: 'string', 
           minLength: 1, 
           maxLength: 100,
-          pattern: '^[a-zA-Z0-9\\s\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF-_.]+$' // Allow alphanumeric, spaces, Arabic, and basic punctuation
+          pattern: '^[a-zA-Z0-9\\s\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF-_.]+$'
         }
       },
       additionalProperties: false
@@ -21,26 +20,21 @@ export default async function (fastify: FastifyInstance) {
 
   fastify.post("/search", { schema: searchSchema }, async (req, res) => {
     const { term } = req.body as { term: string };
-    
-    // Additional sanitization
     const sanitizedTerm = term.trim().substring(0, 100);
 
     try {
-      // Search for podcasts only
       const podcastsResponse = await axios.get(
         "https://itunes.apple.com/search",
         {
           params: {
             term: sanitizedTerm,
             media: "podcast",
-            attribute: "titleTerm", // More specific search for podcast titles
+            attribute: "titleTerm",
           },
         }
       );
 
       const podcasts = podcastsResponse.data.results || [];
-
-      // Save podcasts to database
       const savedPodcasts = await Promise.all(
         podcasts.map(async (p: any) => {
           try {
@@ -61,8 +55,6 @@ export default async function (fastify: FastifyInstance) {
           }
         })
       );
-
-      // Transform to clean API response with only necessary fields
       const cleanPodcasts = savedPodcasts
         .filter(Boolean)
         .map((podcast) => ({
@@ -71,8 +63,6 @@ export default async function (fastify: FastifyInstance) {
           artistName: podcast.artistName,
           image: podcast.artworkUrl600,
         }));
-
-      // Return only what frontend needs
       res.send({
         podcasts: cleanPodcasts,
       });

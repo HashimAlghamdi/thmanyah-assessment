@@ -47,7 +47,6 @@ export default function Header() {
         {/* Navigation arrows - Hide on mobile and during SSR */}
         {!isSSR && !isMobile && (
           <div className="flex space-x-2">
-            {/* Right arrow - Go back in search history */}
             <button 
               onClick={handleGoBack}
               disabled={!canGoBack}
@@ -67,7 +66,6 @@ export default function Header() {
                 />
               </svg>
             </button>
-            {/* Left arrow - Go forward in search history */}
             <button 
               onClick={handleGoForward}
               disabled={!canGoForward}
@@ -89,19 +87,14 @@ export default function Header() {
             </button>
           </div>
         )}
-
-        {/* Search Input - Responsive */}
         <SearchInput className="flex-1 max-w-2xl" />
       </div>
-
-      {/* Auth buttons - Responsive and SSR safe */}
       <div className="flex space-x-2 md:space-x-3">
         {(!isSSR && !isMobile) && (
           <button className="px-3 md:px-4 py-2 text-sm md:text-base text-blue-400 hover:bg-gray-800 rounded">
             تسجيل الدخول
           </button>
-        )}
-        {/* Hide signup button completely on mobile and during SSR */}
+                  )}
         {(!isSSR && !isMobile) && (
           <button className="px-3 md:px-4 py-2 text-sm md:text-base bg-blue-600 hover:bg-blue-700 rounded">
             إنشاء حساب

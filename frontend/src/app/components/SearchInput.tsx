@@ -17,24 +17,19 @@ export default function SearchInput({ className }: SearchInputProps) {
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize input value from URL params and maintain focus
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setInputValue(query);
     
-    // Perform search if there's a query (from URL or navigation)
     if (query.trim()) {
-      // Don't add to history for URL-based searches (could be from navigation)
       performSearch(query, false);
     }
     
-    // Maintain focus if there's a search query
     if (query && inputRef.current) {
       inputRef.current.focus();
     }
   }, [searchParams, performSearch]);
 
-  // Debounced URL update
   useEffect(() => {
     const timer = setTimeout(() => {
       const currentQuery = searchParams.get("q") || "";
@@ -60,7 +55,6 @@ export default function SearchInput({ className }: SearchInputProps) {
   const handleClear = useCallback(() => {
     setInputValue("");
     router.push("/");
-    // Maintain focus after clearing
     if (inputRef.current) {
       inputRef.current.focus();
     }
@@ -96,8 +90,6 @@ export default function SearchInput({ className }: SearchInputProps) {
           className="w-full px-3 md:px-4 py-2 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 pr-10"
           autoFocus={!!searchParams.get("q")}
         />
-
-        {/* Loading spinner or clear button */}
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
           {isLoading ? (
             <svg

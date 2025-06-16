@@ -37,14 +37,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     const trimmedTerm = term.trim();
     
     setSearchHistory(prev => {
-      // If the term already exists, remove it first
       const filtered = prev.filter(item => item !== trimmedTerm);
-      // Add to the end
       const newHistory = [...filtered, trimmedTerm];
-      
-      // Update index to point to the newly added item (last item)
       setCurrentHistoryIndex(newHistory.length - 1);
-      
       return newHistory;
     });
   }, []);
@@ -60,16 +55,12 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     try {
       const response = await apiClient.search(term);
-      
-      // No conversion needed - interfaces match directly
       setSearchResults(response.podcasts);
       
-      // Add to history if this is a new search (not from navigation) and flag is true
       if (addToHistoryFlag && !isNavigatingRef.current) {
         addToHistory(term);
       }
       
-      // Reset navigation flag after search
       isNavigatingRef.current = false;
       
       if (response.error) {
@@ -88,7 +79,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     
     const newIndex = currentHistoryIndex - 1;
     setCurrentHistoryIndex(newIndex);
-    isNavigatingRef.current = true; // Set navigation flag
+    isNavigatingRef.current = true;
     return searchHistory[newIndex];
   }, [canGoBack, currentHistoryIndex, searchHistory]);
 
@@ -97,7 +88,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     
     const newIndex = currentHistoryIndex + 1;
     setCurrentHistoryIndex(newIndex);
-    isNavigatingRef.current = true; // Set navigation flag
+    isNavigatingRef.current = true;
     return searchHistory[newIndex];
   }, [canGoForward, currentHistoryIndex, searchHistory]);
 
@@ -105,7 +96,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSearchResults([]);
     setError(null);
     setIsLoading(false);
-    isNavigatingRef.current = false; // Reset navigation flag
+    isNavigatingRef.current = false;
   }, []);
 
   return (

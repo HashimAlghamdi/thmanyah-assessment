@@ -147,11 +147,9 @@ The search functionality follows this flow:
 6. Clear search or navigate to `/` to return to homepage
 7. TopEpisodes always visible regardless of search state
 
-## Development Notes
+## Architecture
 
-- Search results reuse the existing TopPodcasts component for consistency
-- URL-driven search allows for bookmarkable and shareable searches
-- All search state managed through URL parameters
-- SSR-safe with proper Suspense boundaries for useSearchParams
-- TopEpisodes component preserved as-is for future use
-- External images from iTunes properly configured in Next.js config 
+- URL-driven search for bookmarkable and shareable searches
+- SSR-safe with proper Suspense boundaries
+- Component reusability for consistent UI
+- External images properly configured for security 

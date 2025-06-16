@@ -1,6 +1,6 @@
 # Security Configuration
 
-## 🔒 Security Measures Implemented
+## Security Measures Implemented
 
 ### 1. Environment Variables
 - Database credentials moved to environment variables
@@ -40,7 +40,7 @@
 - Proper logging without data leakage
 - Development vs production error handling
 
-## 🚀 Deployment Security
+## Deployment Security
 
 ### Environment Variables Required:
 ```bash
@@ -55,7 +55,7 @@ ALLOWED_ORIGINS="https://yourdomain.com"
 - logs:CreateLogStream
 - logs:PutLogEvents
 
-## 🔍 Security Checklist
+## Security Checklist
 
 - [x] No hardcoded credentials
 - [x] Input validation implemented
@@ -67,7 +67,7 @@ ALLOWED_ORIGINS="https://yourdomain.com"
 - [x] Sensitive files in .gitignore
 - [x] Environment variables documented
 
-## 🚨 Security Best Practices
+## Security Best Practices
 
 1. **Regular Updates**: Keep dependencies updated
 2. **Monitoring**: Set up CloudWatch alerts
