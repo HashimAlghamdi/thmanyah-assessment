@@ -4,10 +4,15 @@ import Image from "next/image";
 import { useResponsive } from "../contexts/ResponsiveContext";
 
 export default function Sidebar() {
-  const { isMobile, isTablet, isDesktop, isSidebarOpen, setSidebarOpen } = useResponsive();
+  const { isMobile, isTablet, isDesktop, isSidebarOpen, closeSidebar, isSSR } = useResponsive();
+
+  // During SSR, render nothing to avoid hydration mismatches
+  if (isSSR) {
+    return null;
+  }
 
   const handleClose = () => {
-    setSidebarOpen(false);
+    closeSidebar();
   };
 
   // Desktop sidebar - always visible
@@ -26,11 +31,11 @@ export default function Sidebar() {
       {isSidebarOpen && (
         <div className="fixed inset-0 z-50">
           {/* Backdrop */}
-          <div 
+          <div
             className="fixed inset-0 backdrop-blur-sm shadow-2xl"
             onClick={handleClose}
           />
-          
+
           {/* Sidebar */}
           <aside className="fixed right-0 top-0 h-full w-64 bg-gray-900 border-l border-gray-800 z-50 transform transition-transform duration-200 ease-in-out">
             <div className="px-4 py-6">
@@ -47,7 +52,7 @@ export default function Sidebar() {
                   </svg>
                 </button>
               </div>
-              
+
               <SidebarContent />
             </div>
           </aside>

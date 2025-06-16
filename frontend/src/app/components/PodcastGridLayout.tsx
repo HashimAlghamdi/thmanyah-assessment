@@ -17,6 +17,7 @@ export default function PodcastGridLayout({
           title={podcast.title}
           subtitle={podcast.subtitle}
           description={podcast.description}
+          image={podcast.image}
         />
       ))}
     </div>

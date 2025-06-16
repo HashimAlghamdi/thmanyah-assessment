@@ -5,7 +5,10 @@ import { Podcast } from "../interfaces/Podcast";
 
 interface PodcastScrollLayoutProps {
   podcasts: Podcast[];
-  onScrollStateChange?: (canScrollLeft: boolean, canScrollRight: boolean) => void;
+  onScrollStateChange?: (
+    canScrollLeft: boolean,
+    canScrollRight: boolean
+  ) => void;
   scrollTrigger?: number;
 }
 
@@ -20,15 +23,17 @@ export default function PodcastScrollLayout({
   const [canScrollRight, setCanScrollRight] = useState(false);
 
   const checkScrollability = () => {
-    const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    const scrollArea = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLElement;
     if (scrollArea) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollArea;
       const newCanScrollLeft = scrollLeft > 0;
       const newCanScrollRight = scrollLeft < scrollWidth - clientWidth - 1;
-      
+
       setCanScrollLeft(newCanScrollLeft);
       setCanScrollRight(newCanScrollRight);
-      
+
       if (onScrollStateChange) {
         onScrollStateChange(newCanScrollLeft, newCanScrollRight);
       }
@@ -36,56 +41,69 @@ export default function PodcastScrollLayout({
   };
 
   const scrollLeft = () => {
-    const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    const scrollArea = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLElement;
     if (scrollArea) {
       // Calculate scroll distance based on visible podcasts - responsive widths
       const containerWidth = scrollArea.clientWidth;
       const podcastWidth = window.innerWidth < 768 ? 160 + 12 : 192 + 16; // Smaller on mobile
       const visiblePodcasts = Math.floor(containerWidth / podcastWidth);
-      const scrollDistance = Math.max(visiblePodcasts * podcastWidth, podcastWidth);
-      
-      scrollArea.scrollBy({ left: scrollDistance, behavior: 'smooth' });
+      const scrollDistance = Math.max(
+        visiblePodcasts * podcastWidth,
+        podcastWidth
+      );
+
+      scrollArea.scrollBy({ left: scrollDistance, behavior: "smooth" });
     }
   };
 
   const scrollRight = () => {
-    const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    const scrollArea = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLElement;
     if (scrollArea) {
       // Calculate scroll distance based on visible podcasts - responsive widths
       const containerWidth = scrollArea.clientWidth;
       const podcastWidth = window.innerWidth < 768 ? 160 + 12 : 192 + 16; // Smaller on mobile
       const visiblePodcasts = Math.floor(containerWidth / podcastWidth);
-      const scrollDistance = Math.max(visiblePodcasts * podcastWidth, podcastWidth);
-      
-      scrollArea.scrollBy({ left: -scrollDistance, behavior: 'smooth' });
+      const scrollDistance = Math.max(
+        visiblePodcasts * podcastWidth,
+        podcastWidth
+      );
+
+      scrollArea.scrollBy({ left: -scrollDistance, behavior: "smooth" });
     }
   };
 
   useEffect(() => {
-    const scrollArea = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    const scrollArea = scrollAreaRef.current?.querySelector(
+      "[data-radix-scroll-area-viewport]"
+    ) as HTMLElement;
     if (scrollArea) {
       const handleScroll = () => checkScrollability();
       const handleResize = () => checkScrollability();
-      
-      scrollArea.addEventListener('scroll', handleScroll);
-      window.addEventListener('resize', handleResize);
-      
+
+      scrollArea.addEventListener("scroll", handleScroll);
+      window.addEventListener("resize", handleResize);
+
       // Set initial scroll position to rightmost (start position for RTL)
       const setInitialPosition = () => {
         if (scrollArea.scrollWidth > scrollArea.clientWidth) {
-          scrollArea.scrollLeft = scrollArea.scrollWidth - scrollArea.clientWidth;
+          scrollArea.scrollLeft =
+            scrollArea.scrollWidth - scrollArea.clientWidth;
         }
         checkScrollability();
       };
-      
+
       // Try multiple times to ensure content is loaded
       setTimeout(setInitialPosition, 50);
       setTimeout(setInitialPosition, 200);
       setTimeout(setInitialPosition, 500);
-      
+
       return () => {
-        scrollArea.removeEventListener('scroll', handleScroll);
-        window.removeEventListener('resize', handleResize);
+        scrollArea.removeEventListener("scroll", handleScroll);
+        window.removeEventListener("resize", handleResize);
       };
     }
   }, [podcasts]);
@@ -116,6 +134,7 @@ export default function PodcastScrollLayout({
               title={podcast.title}
               subtitle={podcast.subtitle}
               description={podcast.description}
+              image={podcast.image}
             />
           </div>
         ))}

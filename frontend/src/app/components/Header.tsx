@@ -1,15 +1,16 @@
 "use client";
 
 import { useResponsive } from "../contexts/ResponsiveContext";
+import SearchInput from "./SearchInput";
 
 export default function Header() {
-  const { isMobile, isTablet, toggleSidebar } = useResponsive();
+  const { isMobile, isTablet, toggleSidebar, isSSR } = useResponsive();
 
   return (
     <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 space-x-2 md:space-x-4">
       <div className="flex items-center space-x-2 md:space-x-4 flex-1">
-        {/* Burger Menu & Logo - Only show on mobile/tablet */}
-        {(isMobile || isTablet) && (
+        {/* Burger Menu & Logo - Only show on mobile/tablet when not SSR */}
+        {!isSSR && (isMobile || isTablet) && (
           <div className="flex items-center space-x-3">
             <button 
               onClick={toggleSidebar}
@@ -24,8 +25,8 @@ export default function Header() {
           </div>
         )}
 
-        {/* Navigation arrows - Hide on mobile */}
-        {!isMobile && (
+        {/* Navigation arrows - Hide on mobile and during SSR */}
+        {!isSSR && !isMobile && (
           <div className="flex space-x-2">
             <button className="p-2 hover:bg-gray-800 rounded">
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -49,24 +50,18 @@ export default function Header() {
         )}
 
         {/* Search Input - Responsive */}
-        <div className="flex-1 max-w-2xl">
-          <input
-            type="text"
-            placeholder={isMobile ? "بحث..." : "ابحث في أكثر من 70 مليون بودكاست وحلقة..."}
-            className="w-full px-3 md:px-4 py-2 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500"
-          />
-        </div>
+        <SearchInput className="flex-1 max-w-2xl" />
       </div>
 
-      {/* Auth buttons - Responsive */}
+      {/* Auth buttons - Responsive and SSR safe */}
       <div className="flex space-x-2 md:space-x-3">
-        {!isMobile && (
+        {(!isSSR && !isMobile) && (
           <button className="px-3 md:px-4 py-2 text-sm md:text-base text-blue-400 hover:bg-gray-800 rounded">
             تسجيل الدخول
           </button>
         )}
-        {/* Hide signup button completely on mobile */}
-        {!isMobile && (
+        {/* Hide signup button completely on mobile and during SSR */}
+        {(!isSSR && !isMobile) && (
           <button className="px-3 md:px-4 py-2 text-sm md:text-base bg-blue-600 hover:bg-blue-700 rounded">
             إنشاء حساب
           </button>

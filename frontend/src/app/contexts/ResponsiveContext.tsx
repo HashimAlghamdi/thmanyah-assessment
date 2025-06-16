@@ -2,13 +2,17 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+type ScreenSize = "mobile" | "tablet" | "desktop";
+
 interface ResponsiveContextType {
+  screenSize: ScreenSize;
   isMobile: boolean;
   isTablet: boolean;
   isDesktop: boolean;
   isSidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
   toggleSidebar: () => void;
+  closeSidebar: () => void;
+  isSSR: boolean;
 }
 
 const ResponsiveContext = createContext<ResponsiveContextType | undefined>(
@@ -20,47 +24,62 @@ export function ResponsiveProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [isMobile, setIsMobile] = useState(false);
-  const [isTablet, setIsTablet] = useState(false);
-  const [isDesktop, setIsDesktop] = useState(false);
+  const [screenSize, setScreenSize] = useState<ScreenSize>("desktop");
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSSR, setIsSSR] = useState(true);
 
   useEffect(() => {
-    const checkScreenSize = () => {
-      if (typeof window !== "undefined") {
-        const width = window.innerWidth;
-        const mobile = width < 768;
-        const tablet = width >= 768 && width < 1024;
-        const desktop = width >= 1024;
+    // Mark SSR as false after hydration
+    setIsSSR(false);
 
-        setIsMobile(mobile);
-        setIsTablet(tablet);
-        setIsDesktop(desktop);
+    const checkScreenSize = () => {
+      if (typeof window === "undefined") return;
+
+      const width = window.innerWidth;
+      if (width < 768) {
+        setScreenSize("mobile");
+      } else if (width < 1024) {
+        setScreenSize("tablet");
+      } else {
+        setScreenSize("desktop");
       }
     };
 
+    // Initial check
     checkScreenSize();
-    window.addEventListener("resize", checkScreenSize);
-    return () => window.removeEventListener("resize", checkScreenSize);
-  }, [isSidebarOpen]);
 
-  const setSidebarOpen = (open: boolean) => {
-    setIsSidebarOpen(open);
-  };
+    // Listen for resize events
+    const handleResize = () => {
+      checkScreenSize();
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleSidebar = () => {
-    setIsSidebarOpen(!isSidebarOpen);
+    setIsSidebarOpen((prev) => !prev);
   };
+
+  const closeSidebar = () => {
+    setIsSidebarOpen(false);
+  };
+
+  const isMobile = screenSize === "mobile";
+  const isTablet = screenSize === "tablet";
+  const isDesktop = screenSize === "desktop";
 
   return (
     <ResponsiveContext.Provider
       value={{
+        screenSize,
         isMobile,
         isTablet,
         isDesktop,
         isSidebarOpen,
-        setSidebarOpen,
         toggleSidebar,
+        closeSidebar,
+        isSSR,
       }}
     >
       {children}
