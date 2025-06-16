@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
 import { apiClient } from '../lib/api';
 import { Podcast } from '../interfaces/Podcast';
 
@@ -8,8 +8,14 @@ interface SearchContextType {
   searchResults: Podcast[];
   isLoading: boolean;
   error: string | null;
-  performSearch: (term: string) => Promise<void>;
+  searchHistory: string[];
+  currentHistoryIndex: number;
+  canGoBack: boolean;
+  canGoForward: boolean;
+  performSearch: (term: string, addToHistoryFlag?: boolean) => Promise<void>;
   clearSearch: () => void;
+  goBackInHistory: () => string | null;
+  goForwardInHistory: () => string | null;
 }
 
 const SearchContext = createContext<SearchContextType | undefined>(undefined);
@@ -18,8 +24,32 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchResults, setSearchResults] = useState<Podcast[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
+  const isNavigatingRef = useRef(false);
 
-  const performSearch = useCallback(async (term: string) => {
+  const canGoBack = currentHistoryIndex > 0;
+  const canGoForward = currentHistoryIndex < searchHistory.length - 1;
+
+  const addToHistory = useCallback((term: string) => {
+    if (!term.trim()) return;
+    
+    const trimmedTerm = term.trim();
+    
+    setSearchHistory(prev => {
+      // If the term already exists, remove it first
+      const filtered = prev.filter(item => item !== trimmedTerm);
+      // Add to the end
+      const newHistory = [...filtered, trimmedTerm];
+      
+      // Update index to point to the newly added item (last item)
+      setCurrentHistoryIndex(newHistory.length - 1);
+      
+      return newHistory;
+    });
+  }, []);
+
+  const performSearch = useCallback(async (term: string, addToHistoryFlag = true) => {
     if (!term.trim()) {
       clearSearch();
       return;
@@ -34,6 +64,14 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       // No conversion needed - interfaces match directly
       setSearchResults(response.podcasts);
       
+      // Add to history if this is a new search (not from navigation) and flag is true
+      if (addToHistoryFlag && !isNavigatingRef.current) {
+        addToHistory(term);
+      }
+      
+      // Reset navigation flag after search
+      isNavigatingRef.current = false;
+      
       if (response.error) {
         setError(response.error);
       }
@@ -43,12 +81,31 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [addToHistory]);
+
+  const goBackInHistory = useCallback((): string | null => {
+    if (!canGoBack) return null;
+    
+    const newIndex = currentHistoryIndex - 1;
+    setCurrentHistoryIndex(newIndex);
+    isNavigatingRef.current = true; // Set navigation flag
+    return searchHistory[newIndex];
+  }, [canGoBack, currentHistoryIndex, searchHistory]);
+
+  const goForwardInHistory = useCallback((): string | null => {
+    if (!canGoForward) return null;
+    
+    const newIndex = currentHistoryIndex + 1;
+    setCurrentHistoryIndex(newIndex);
+    isNavigatingRef.current = true; // Set navigation flag
+    return searchHistory[newIndex];
+  }, [canGoForward, currentHistoryIndex, searchHistory]);
 
   const clearSearch = useCallback(() => {
     setSearchResults([]);
     setError(null);
     setIsLoading(false);
+    isNavigatingRef.current = false; // Reset navigation flag
   }, []);
 
   return (
@@ -56,8 +113,14 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       searchResults,
       isLoading,
       error,
+      searchHistory,
+      currentHistoryIndex,
+      canGoBack,
+      canGoForward,
       performSearch,
-      clearSearch
+      clearSearch,
+      goBackInHistory,
+      goForwardInHistory
     }}>
       {children}
     </SearchContext.Provider>

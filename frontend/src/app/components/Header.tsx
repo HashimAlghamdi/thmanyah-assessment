@@ -1,10 +1,28 @@
 "use client";
 
 import { useResponsive } from "../contexts/ResponsiveContext";
+import { useSearch } from "../contexts/SearchContext";
+import { useRouter } from "next/navigation";
 import SearchInput from "./SearchInput";
 
 export default function Header() {
   const { isMobile, isTablet, toggleSidebar, isSSR } = useResponsive();
+  const { canGoBack, canGoForward, goBackInHistory, goForwardInHistory } = useSearch();
+  const router = useRouter();
+
+  const handleGoBack = () => {
+    const previousQuery = goBackInHistory();
+    if (previousQuery) {
+      router.push(`/search?q=${encodeURIComponent(previousQuery)}`);
+    }
+  };
+
+  const handleGoForward = () => {
+    const nextQuery = goForwardInHistory();
+    if (nextQuery) {
+      router.push(`/search?q=${encodeURIComponent(nextQuery)}`);
+    }
+  };
 
   return (
     <header className="flex items-center justify-between px-4 md:px-6 py-3 md:py-4 space-x-2 md:space-x-4">
@@ -28,7 +46,18 @@ export default function Header() {
         {/* Navigation arrows - Hide on mobile and during SSR */}
         {!isSSR && !isMobile && (
           <div className="flex space-x-2">
-            <button className="p-2 hover:bg-gray-800 rounded">
+            {/* Right arrow - Go back in search history */}
+            <button 
+              onClick={handleGoBack}
+              disabled={!canGoBack}
+              className={`p-2 rounded transition-colors ${
+                canGoBack 
+                  ? 'hover:bg-gray-800 text-white' 
+                  : 'text-gray-600 cursor-not-allowed'
+              }`}
+              aria-label="البحث السابق"
+              title={canGoBack ? "العودة للبحث السابق" : "لا يوجد بحث سابق"}
+            >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -37,7 +66,18 @@ export default function Header() {
                 />
               </svg>
             </button>
-            <button className="p-2 hover:bg-gray-800 rounded">
+            {/* Left arrow - Go forward in search history */}
+            <button 
+              onClick={handleGoForward}
+              disabled={!canGoForward}
+              className={`p-2 rounded transition-colors ${
+                canGoForward 
+                  ? 'hover:bg-gray-800 text-white' 
+                  : 'text-gray-600 cursor-not-allowed'
+              }`}
+              aria-label="البحث التالي"
+              title={canGoForward ? "الانتقال للبحث التالي" : "لا يوجد بحث تالي"}
+            >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"

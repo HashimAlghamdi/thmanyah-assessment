@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import TopPodcasts from "./TopPodcasts";
 import { useSearch } from "../contexts/SearchContext";
@@ -9,15 +9,19 @@ export default function HomeContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("q") || "";
   const { searchResults, isLoading, error, performSearch, clearSearch } = useSearch();
+  const lastSearchRef = useRef<string>("");
 
   const isSearching = searchQuery.length > 0;
 
   // Trigger search when URL params change
   useEffect(() => {
     if (searchQuery.trim()) {
-      performSearch(searchQuery);
+      // Always pass true - SearchContext will handle navigation vs new search internally
+      performSearch(searchQuery, true);
+      lastSearchRef.current = searchQuery;
     } else {
       clearSearch();
+      lastSearchRef.current = "";
     }
   }, [searchQuery, performSearch, clearSearch]);
 

@@ -1,33 +1,34 @@
-"use client";
-
 import { Suspense } from "react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
-import { LayoutProvider } from "../contexts/LayoutContext";
-import { ResponsiveProvider } from "../contexts/ResponsiveContext";
-import { SearchProvider } from "../contexts/SearchContext";
-import HomeContent from "../components/HomeContent";
+import { Metadata } from "next";
+import SearchPageClient from "./SearchPageClient";
+import LoadingSpinner from "../components/LoadingSpinner";
+
+type Props = {
+  searchParams: Promise<{ q?: string }>;
+};
+
+export async function generateMetadata({
+  searchParams,
+}: Props): Promise<Metadata> {
+  const { q: query } = await searchParams;
+
+  if (query) {
+    return {
+      title: `البحث عن "${query}" - منصة البودكاست`,
+      description: `نتائج البحث عن "${query}" في منصة البودكاست`,
+    };
+  }
+
+  return {
+    title: "منصة البودكاست",
+    description: "ابحث واكتشف البودكاست",
+  };
+}
 
 export default function SearchPage() {
   return (
-    <ResponsiveProvider>
-      <SearchProvider>
-        <LayoutProvider>
-          <div className="min-h-screen bg-gray-900 text-white flex">
-            <Sidebar />
-
-            <div className="flex-1 flex flex-col min-w-0">
-              <Header />
-
-              <main className="flex-1 px-3 md:px-6 py-4 md:py-8 overflow-x-hidden">
-                <Suspense fallback={<div>Loading...</div>}>
-                  <HomeContent />
-                </Suspense>
-              </main>
-            </div>
-          </div>
-        </LayoutProvider>
-      </SearchProvider>
-    </ResponsiveProvider>
+    <Suspense fallback={<LoadingSpinner />}>
+      <SearchPageClient />
+    </Suspense>
   );
-} 
+}

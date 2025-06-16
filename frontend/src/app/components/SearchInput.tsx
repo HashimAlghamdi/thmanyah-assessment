@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSearch } from "../contexts/SearchContext";
 import { useResponsive } from "../contexts/ResponsiveContext";
@@ -11,16 +11,28 @@ interface SearchInputProps {
 
 export default function SearchInput({ className }: SearchInputProps) {
   const { isMobile } = useResponsive();
-  const { isLoading } = useSearch();
+  const { isLoading, performSearch } = useSearch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [inputValue, setInputValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Initialize input value from URL params
+  // Initialize input value from URL params and maintain focus
   useEffect(() => {
     const query = searchParams.get("q") || "";
     setInputValue(query);
-  }, [searchParams]);
+    
+    // Perform search if there's a query (from URL or navigation)
+    if (query.trim()) {
+      // Don't add to history for URL-based searches (could be from navigation)
+      performSearch(query, false);
+    }
+    
+    // Maintain focus if there's a search query
+    if (query && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [searchParams, performSearch]);
 
   // Debounced URL update
   useEffect(() => {
@@ -48,6 +60,10 @@ export default function SearchInput({ className }: SearchInputProps) {
   const handleClear = useCallback(() => {
     setInputValue("");
     router.push("/");
+    // Maintain focus after clearing
+    if (inputRef.current) {
+      inputRef.current.focus();
+    }
   }, [router]);
 
   const handleKeyDown = useCallback(
@@ -69,6 +85,7 @@ export default function SearchInput({ className }: SearchInputProps) {
     <div className={`relative ${className}`}>
       <div className="relative">
         <input
+          ref={inputRef}
           type="text"
           value={inputValue}
           onChange={handleInputChange}
@@ -77,6 +94,7 @@ export default function SearchInput({ className }: SearchInputProps) {
             isMobile ? "بحث..." : "ابحث عن أكثر من 70 مليون بودكاست ..."
           }
           className="w-full px-3 md:px-4 py-2 text-sm md:text-base bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-blue-500 pr-10"
+          autoFocus={!!searchParams.get("q")}
         />
 
         {/* Loading spinner or clear button */}
