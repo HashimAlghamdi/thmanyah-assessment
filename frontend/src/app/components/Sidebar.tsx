@@ -41,7 +41,7 @@ export default function Sidebar() {
             <div className="px-4 py-6">
               {/* Close button */}
               <div className="flex justify-between items-center mb-8">
-                <img src="/favicon.svg" alt="Logo" width="40" height="44" />
+                <Image src="/favicon.svg" alt="Logo" width={40} height={44} />
                 <button
                   onClick={handleClose}
                   className="p-2 hover:bg-gray-800 rounded"
@@ -75,7 +75,7 @@ function SidebarContent() {
     <>
       {/* Logo - Only show on desktop since mobile has it in header */}
       <div className="mb-8 lg:block hidden">
-        <img src="/favicon.svg" alt="Logo" width="40" height="44" />
+        <Image src="/favicon.svg" alt="Logo" width={40} height={44} />
       </div>
 
       <nav className="space-y-2">

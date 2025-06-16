@@ -4,6 +4,7 @@ import { useResponsive } from "../contexts/ResponsiveContext";
 import { useSearch } from "../contexts/SearchContext";
 import { useRouter } from "next/navigation";
 import SearchInput from "./SearchInput";
+import Image from "next/image";
 
 export default function Header() {
   const { isMobile, isTablet, toggleSidebar, isSSR } = useResponsive();
@@ -39,7 +40,7 @@ export default function Header() {
                 <path fillRule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
               </svg>
             </button>
-            <img src="/favicon.svg" alt="Logo" width="32" height="36" className="flex-shrink-0" />
+            <Image src="/favicon.svg" alt="Logo" width={32} height={36} className="flex-shrink-0" />
           </div>
         )}
 
