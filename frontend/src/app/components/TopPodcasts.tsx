@@ -146,7 +146,7 @@ export default function TopPodcasts({
       </div>
 
       {/* Loading State */}
-      {isLoading && <LoadingSpinner text="جاري البحث..." fullScreen={false} />}
+      {isLoading && <LoadingSpinner text="جاري البحث..." variant="inline" fullScreen={false} />}
 
       {/* Error State */}
       {error && (

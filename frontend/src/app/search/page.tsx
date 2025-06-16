@@ -27,7 +27,7 @@ export async function generateMetadata({
 
 export default function SearchPage() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<LoadingSpinner size="lg" />}>
       <SearchPageClient />
     </Suspense>
   );

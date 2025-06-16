@@ -26,7 +26,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 
 export default function Home() {
   return (
-    <Suspense fallback={<LoadingSpinner />}>
+    <Suspense fallback={<LoadingSpinner size="lg" />}>
       <HomePageClient />
     </Suspense>
   );

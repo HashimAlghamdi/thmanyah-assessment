@@ -21,7 +21,7 @@ export default function HomePageClient() {
               <Header />
 
               <main className="flex-1 px-3 md:px-6 py-4 md:py-8 overflow-x-hidden">
-                <Suspense fallback={<LoadingSpinner />}>
+                <Suspense fallback={<LoadingSpinner size="lg" />}>
                   <HomeContent />
                 </Suspense>
               </main>
