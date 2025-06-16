@@ -6,19 +6,20 @@ provider:
   stage: dev
   region: us-east-1
   environment:
-    DATABASE_URL: postgresql://postgres:g;AM2Rb9&f3R@database-1.cw1sgcsyoxjz.us-east-1.rds.amazonaws.com:5432/postgres
+    DATABASE_URL: ${env:DATABASE_URL}
   iamRoleStatements:
     - Effect: Allow
       Action:
-        - rds:*
+        - rds:DescribeDBInstances
+        - rds:DescribeDBClusters
       Resource: "*"
 
 package:
   patterns:
-    - 'prisma/schema.prisma'
-    - 'generated/**'
-    - 'node_modules/@prisma/client/**'
-    - 'node_modules/.prisma/**'
+    - "prisma/schema.prisma"
+    - "generated/**"
+    - "node_modules/@prisma/client/**"
+    - "node_modules/.prisma/**"
 
 functions:
   api:
@@ -30,7 +31,7 @@ functions:
           path: /{proxy+}
           method: ANY
           cors:
-            origin: '*'
+            origin: "*"
             headers:
               - Content-Type
               - X-Amz-Date
@@ -43,7 +44,7 @@ functions:
           path: /
           method: ANY
           cors:
-            origin: '*'
+            origin: "*"
             headers:
               - Content-Type
               - X-Amz-Date
@@ -62,10 +63,10 @@ custom:
     bundle: true
     minify: false
     sourcemap: false
-    exclude: ['@prisma/client', '.prisma']
-    target: 'node18'
+    exclude: ["@prisma/client", ".prisma"]
+    target: "node18"
     define: {}
-    platform: 'node'
+    platform: "node"
     concurrency: 10
   serverless-offline:
-    httpPort: 3001 
+    httpPort: 3001

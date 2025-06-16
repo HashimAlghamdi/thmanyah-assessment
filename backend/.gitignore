@@ -1,5 +1,43 @@
 node_modules
 # Keep environment variables out of version control
 .env
+.env.local
+.env.production
 /generated
 dist
+
+# Serverless deployment artifacts
+.serverless/
+.serverless_nextjs/
+
+# AWS credentials
+.aws/
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+# Optional npm cache directory
+.npm
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity

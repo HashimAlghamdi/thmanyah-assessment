@@ -138,7 +138,8 @@
                 {
                   "Effect": "Allow",
                   "Action": [
-                    "rds:*"
+                    "rds:DescribeDBInstances",
+                    "rds:DescribeDBClusters"
                   ],
                   "Resource": "*"
                 }
@@ -169,7 +170,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/thmanyah-backend/dev/1750075519277-2025-06-16T12:05:19.277Z/thmanyah-backend.zip"
+          "S3Key": "serverless/thmanyah-backend/dev/1750098636861-2025-06-16T18:30:36.861Z/thmanyah-backend.zip"
         },
         "Handler": "src/lambda.handler",
         "Runtime": "nodejs18.x",
@@ -192,14 +193,14 @@
         "ApiLogGroup"
       ]
     },
-    "ApiLambdaVersionDKifkNm7bY9wMGc8hevBU43Ddb4U7NQ1eD9syznSPcY": {
+    "ApiLambdaVersionU0gXuvtpMRbpjCRhrDgOV1LSekZ93jVjrpT1eOlWvIU": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
         "FunctionName": {
           "Ref": "ApiLambdaFunction"
         },
-        "CodeSha256": "2n88Jh0I39YZC2hOXi3YN8nzz7AxWUNNUA+IE9Bmg7g="
+        "CodeSha256": "syYYnpb0ZCriYl6fmb25TAb8qjFvu+oKx+9eGB1ZCqQ="
       }
     },
     "ApiGatewayRestApi": {
@@ -417,7 +418,7 @@
         "ApiLambdaPermissionApiGateway"
       ]
     },
-    "ApiGatewayDeployment1750075511805": {
+    "ApiGatewayDeployment1750098632160": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -482,7 +483,7 @@
     "ApiLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ApiLambdaVersionDKifkNm7bY9wMGc8hevBU43Ddb4U7NQ1eD9syznSPcY"
+        "Ref": "ApiLambdaVersionU0gXuvtpMRbpjCRhrDgOV1LSekZ93jVjrpT1eOlWvIU"
       },
       "Export": {
         "Name": "sls-thmanyah-backend-dev-ApiLambdaFunctionQualifiedArn"

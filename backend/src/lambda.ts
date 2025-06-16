@@ -36,14 +36,22 @@ export const handler = async (
     payload: event.body || undefined, // Convert null to undefined
   });
 
-  // Return API Gateway compatible response with CORS headers
   return {
     statusCode: response.statusCode,
     headers: {
-      ...response.headers as { [key: string]: string },
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+      ...(response.headers as { [key: string]: string }),
+      // CORS headers
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+      "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+      // Security headers
+      "X-Content-Type-Options": "nosniff",
+      "X-Frame-Options": "DENY",
+      "X-XSS-Protection": "1; mode=block",
+      "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+      "Referrer-Policy": "strict-origin-when-cross-origin",
+      "Content-Security-Policy":
+        "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https://itunes.apple.com;",
     },
     body: response.body,
   };

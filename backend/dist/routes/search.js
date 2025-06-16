@@ -6,13 +6,31 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.default = default_1;
 const axios_1 = __importDefault(require("axios"));
 async function default_1(fastify) {
-    fastify.post("/search", async (req, res) => {
+    // Add JSON schema validation
+    const searchSchema = {
+        body: {
+            type: 'object',
+            required: ['term'],
+            properties: {
+                term: {
+                    type: 'string',
+                    minLength: 1,
+                    maxLength: 100,
+                    pattern: '^[a-zA-Z0-9\\s\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF-_.]+$' // Allow alphanumeric, spaces, Arabic, and basic punctuation
+                }
+            },
+            additionalProperties: false
+        }
+    };
+    fastify.post("/search", { schema: searchSchema }, async (req, res) => {
         const { term } = req.body;
+        // Additional sanitization
+        const sanitizedTerm = term.trim().substring(0, 100);
         try {
             // Search for podcasts only
             const podcastsResponse = await axios_1.default.get("https://itunes.apple.com/search", {
                 params: {
-                    term,
+                    term: sanitizedTerm,
                     media: "podcast",
                     attribute: "titleTerm", // More specific search for podcast titles
                 },
