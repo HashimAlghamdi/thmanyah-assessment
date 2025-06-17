@@ -4,18 +4,17 @@ import axios from "axios";
 export default async function (fastify: FastifyInstance) {
   const searchSchema = {
     body: {
-      type: 'object',
-      required: ['term'],
+      type: "object",
+      required: ["term"],
       properties: {
-        term: { 
-          type: 'string', 
-          minLength: 1, 
+        term: {
+          type: "string",
+          minLength: 1,
           maxLength: 100,
-          pattern: '/^[\p{L}\p{N}\p{M}\s\-_.]+$/u;'
-        }
+        },
       },
-      additionalProperties: false
-    }
+      additionalProperties: false,
+    },
   };
 
   fastify.post("/search", { schema: searchSchema }, async (req, res) => {
@@ -55,14 +54,12 @@ export default async function (fastify: FastifyInstance) {
           }
         })
       );
-      const cleanPodcasts = savedPodcasts
-        .filter(Boolean)
-        .map((podcast) => ({
-          id: podcast.id,
-          title: podcast.name,
-          artistName: podcast.artistName,
-          image: podcast.artworkUrl600,
-        }));
+      const cleanPodcasts = savedPodcasts.filter(Boolean).map((podcast) => ({
+        id: podcast.id,
+        title: podcast.name,
+        artistName: podcast.artistName,
+        image: podcast.artworkUrl600,
+      }));
       res.send({
         podcasts: cleanPodcasts,
       });
