@@ -1,8 +1,6 @@
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "https://il0vt0sm3j.execute-api.us-east-1.amazonaws.com/dev";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-import { Podcast } from '../interfaces/Podcast';
+import { Podcast } from "../interfaces/Podcast";
 
 export interface SearchResponse {
   podcasts: Podcast[];
@@ -12,7 +10,7 @@ export interface SearchResponse {
 export class ApiClient {
   private baseUrl: string;
 
-  constructor(baseUrl: string = API_BASE_URL) {
+  constructor(baseUrl: string = API_BASE_URL!) {
     this.baseUrl = baseUrl;
   }
 

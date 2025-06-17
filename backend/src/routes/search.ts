@@ -11,7 +11,7 @@ export default async function (fastify: FastifyInstance) {
           type: 'string', 
           minLength: 1, 
           maxLength: 100,
-          pattern: '^[a-zA-Z0-9\\s\\u0600-\\u06FF\\u0750-\\u077F\\u08A0-\\u08FF\\uFB50-\\uFDFF\\uFE70-\\uFEFF-_.]+$'
+          pattern: '/^[\p{L}\p{N}\p{M}\s\-_.]+$/u;'
         }
       },
       additionalProperties: false
