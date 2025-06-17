@@ -17,19 +17,19 @@ export default function SharedLayout({ children }: SharedLayoutProps) {
     <ResponsiveProvider>
       <SearchProvider>
         <LayoutProvider>
-          <div className="min-h-screen bg-gray-900 text-white flex">
-            <Sidebar />
+          <Suspense fallback={<LoadingSpinner size="lg" />}>
+            <div className="min-h-screen bg-gray-900 text-white flex">
+              <Sidebar />
 
-            <div className="flex-1 flex flex-col min-w-0">
-              <Header />
+              <div className="flex-1 flex flex-col min-w-0">
+                <Header />
 
-              <main className="flex-1 px-3 md:px-6 py-4 md:py-8 overflow-x-hidden">
-                <Suspense fallback={<LoadingSpinner size="lg" />}>
+                <main className="flex-1 px-3 md:px-6 py-4 md:py-8 overflow-x-hidden">
                   {children}
-                </Suspense>
-              </main>
+                </main>
+              </div>
             </div>
-          </div>
+          </Suspense>
         </LayoutProvider>
       </SearchProvider>
     </ResponsiveProvider>
