@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { Metadata } from "next";
 import HomeContent from "./components/HomeContent";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 type Props = {
   searchParams: Promise<{ q?: string }>;
@@ -22,5 +24,9 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
 }
 
 export default function Home() {
-  return <HomeContent />;
+  return (
+    <Suspense fallback={<LoadingSpinner size="lg" />}>
+      <HomeContent />
+    </Suspense>
+  );
 }
