@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans_Arabic } from "next/font/google";
 import "./globals.css";
+import SharedLayout from "./components/SharedLayout";
 
 const ibmPlexArabic = IBM_Plex_Sans_Arabic({
   variable: "--font-ibm-plex-arabic",
@@ -32,7 +33,9 @@ export default function RootLayout({
       <body
         className={`${ibmPlexArabic.variable} font-sans antialiased`}
       >
-        {children}
+        <SharedLayout>
+          {children}
+        </SharedLayout>
       </body>
     </html>
   );

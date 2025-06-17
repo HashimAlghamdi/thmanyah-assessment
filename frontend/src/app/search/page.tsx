@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { Metadata } from "next";
-import SearchPageClient from "./SearchPageClient";
+import HomeContent from "../components/HomeContent";
 import LoadingSpinner from "../components/LoadingSpinner";
 
 type Props = {
@@ -20,7 +20,7 @@ export async function generateMetadata({
   }
 
   return {
-    title: "منصة البودكاست",
+    title: "البحث - منصة البودكاست",
     description: "ابحث واكتشف البودكاست",
   };
 }
@@ -28,7 +28,7 @@ export async function generateMetadata({
 export default function SearchPage() {
   return (
     <Suspense fallback={<LoadingSpinner size="lg" />}>
-      <SearchPageClient />
+      <HomeContent />
     </Suspense>
   );
 }

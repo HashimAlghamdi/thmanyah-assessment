@@ -1,15 +1,18 @@
 "use client";
 
 import { Suspense } from "react";
-import Header from "../components/Header";
-import Sidebar from "../components/Sidebar";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 import { LayoutProvider } from "../contexts/LayoutContext";
 import { ResponsiveProvider } from "../contexts/ResponsiveContext";
 import { SearchProvider } from "../contexts/SearchContext";
-import HomeContent from "../components/HomeContent";
-import LoadingSpinner from "../components/LoadingSpinner";
+import LoadingSpinner from "./LoadingSpinner";
 
-export default function SearchPageClient() {
+interface SharedLayoutProps {
+  children: React.ReactNode;
+}
+
+export default function SharedLayout({ children }: SharedLayoutProps) {
   return (
     <ResponsiveProvider>
       <SearchProvider>
@@ -22,7 +25,7 @@ export default function SearchPageClient() {
 
               <main className="flex-1 px-3 md:px-6 py-4 md:py-8 overflow-x-hidden">
                 <Suspense fallback={<LoadingSpinner size="lg" />}>
-                  <HomeContent />
+                  {children}
                 </Suspense>
               </main>
             </div>
