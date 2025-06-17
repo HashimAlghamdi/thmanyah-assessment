@@ -4,7 +4,6 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSearch } from "../contexts/SearchContext";
 import { useResponsive } from "../contexts/ResponsiveContext";
-import LoadingSpinner from "./LoadingSpinner";
 
 interface SearchInputProps {
   className?: string;
@@ -12,7 +11,7 @@ interface SearchInputProps {
 
 export default function SearchInput({ className }: SearchInputProps) {
   const { isMobile } = useResponsive();
-  const { isLoading, performSearch } = useSearch();
+  const { performSearch } = useSearch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [inputValue, setInputValue] = useState("");
@@ -92,9 +91,7 @@ export default function SearchInput({ className }: SearchInputProps) {
           autoFocus={!!searchParams.get("q")}
         />
         <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
-          {isLoading ? (
-            <LoadingSpinner variant="minimal" size="sm" className="text-gray-400" />
-          ) : inputValue ? (
+          {inputValue ? (
             <button
               onClick={handleClear}
               className="text-gray-400 hover:text-gray-300"

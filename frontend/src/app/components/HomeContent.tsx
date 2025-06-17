@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import TopPodcasts from "./TopPodcasts";
+import LoadingSpinner from "./LoadingSpinner";
 import { useSearch } from "../contexts/SearchContext";
 
 export default function HomeContent() {
@@ -25,6 +26,11 @@ export default function HomeContent() {
     }
   }, [searchQuery, performSearch, clearSearch]);
 
+  // Show unified loading state when searching
+  if (isSearching && isLoading) {
+    return <LoadingSpinner size="lg" text="جاري البحث..." />;
+  }
+
   return (
     <div className="space-y-8 md:space-y-12">
       {!isSearching ? (
@@ -41,7 +47,6 @@ export default function HomeContent() {
           <TopPodcasts
             podcasts={searchResults}
             title={`نتائج البحث عن "${searchQuery}"`}
-            isLoading={isLoading}
             error={error}
           />
         </>

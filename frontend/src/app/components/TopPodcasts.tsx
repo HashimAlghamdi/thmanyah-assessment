@@ -12,12 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Podcast } from "../interfaces/Podcast";
-import LoadingSpinner from "./LoadingSpinner";
 
 interface TopPodcastsProps {
   podcasts: Podcast[];
   title?: string;
-  isLoading?: boolean;
   error?: string | null;
   isSearchPrompt?: boolean;
 }
@@ -25,7 +23,6 @@ interface TopPodcastsProps {
 export default function TopPodcasts({
   podcasts,
   title,
-  isLoading = false,
   error = null,
   isSearchPrompt = false,
 }: TopPodcastsProps) {
@@ -48,8 +45,8 @@ export default function TopPodcasts({
       <div className="flex items-center justify-between mb-4 md:mb-6 pb-3 md:pb-4 border-b border-gray-800">
         <h2 className="text-xl md:text-2xl font-bold">{title}</h2>
 
-        {/* Only show controls when not loading and have podcasts */}
-        {!isLoading && podcasts.length > 0 && (
+        {/* Only show controls when have podcasts */}
+        {podcasts.length > 0 && (
           <div className="flex space-x-1 md:space-x-2">
             {layout === "scroll" && !isMobile && (
               <>
@@ -145,8 +142,7 @@ export default function TopPodcasts({
         )}
       </div>
 
-      {/* Loading State */}
-      {isLoading && <LoadingSpinner text="جاري البحث..." variant="inline" fullScreen={false} />}
+
 
       {/* Error State */}
       {error && (
@@ -169,7 +165,7 @@ export default function TopPodcasts({
       )}
 
       {/* Empty State */}
-      {!isLoading && !error && podcasts.length === 0 && (
+      {!error && podcasts.length === 0 && (
         <div className="text-center py-12">
           {isSearchPrompt ? (
             <>
@@ -220,8 +216,7 @@ export default function TopPodcasts({
       )}
 
       {/* Podcast Results */}
-      {!isLoading &&
-        !error &&
+      {!error &&
         podcasts.length > 0 &&
         (layout === "scroll" ? (
           <PodcastScrollLayout
