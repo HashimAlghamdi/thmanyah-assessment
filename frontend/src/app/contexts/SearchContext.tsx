@@ -27,6 +27,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
   const isNavigatingRef = useRef(false);
+  const currentSearchTermRef = useRef<string>("");
+  const searchAbortControllerRef = useRef<AbortController | null>(null);
 
   const canGoBack = currentHistoryIndex > 0;
   const canGoForward = currentHistoryIndex < searchHistory.length - 1;
@@ -50,15 +52,38 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const trimmedTerm = term.trim();
+    
+    // Prevent duplicate API calls for the same search term
+    if (isLoading || currentSearchTermRef.current === trimmedTerm) {
+      return;
+    }
+
+    // Cancel any ongoing search
+    if (searchAbortControllerRef.current) {
+      searchAbortControllerRef.current.abort();
+    }
+
+    // Create new abort controller for this search
+    const abortController = new AbortController();
+    searchAbortControllerRef.current = abortController;
+    currentSearchTermRef.current = trimmedTerm;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await apiClient.search(term);
+      const response = await apiClient.search(trimmedTerm);
+      
+      // Check if this search was aborted
+      if (abortController.signal.aborted) {
+        return;
+      }
+      
       setSearchResults(response.podcasts);
       
       if (addToHistoryFlag && !isNavigatingRef.current) {
-        addToHistory(term);
+        addToHistory(trimmedTerm);
       }
       
       isNavigatingRef.current = false;
@@ -67,12 +92,18 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         setError(response.error);
       }
     } catch (err) {
+      if (abortController.signal.aborted) {
+        return; // Don't set error state for aborted requests
+      }
       setError(err instanceof Error ? err.message : 'Search failed');
       setSearchResults([]);
     } finally {
-      setIsLoading(false);
+      if (!abortController.signal.aborted) {
+        setIsLoading(false);
+        searchAbortControllerRef.current = null;
+      }
     }
-  }, [addToHistory]);
+  }, [addToHistory, isLoading]);
 
   const goBackInHistory = useCallback((): string | null => {
     if (!canGoBack) return null;
@@ -93,10 +124,17 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   }, [canGoForward, currentHistoryIndex, searchHistory]);
 
   const clearSearch = useCallback(() => {
+    // Cancel any ongoing search
+    if (searchAbortControllerRef.current) {
+      searchAbortControllerRef.current.abort();
+      searchAbortControllerRef.current = null;
+    }
+    
     setSearchResults([]);
     setError(null);
     setIsLoading(false);
     isNavigatingRef.current = false;
+    currentSearchTermRef.current = "";
   }, []);
 
   return (
