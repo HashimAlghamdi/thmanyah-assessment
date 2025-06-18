@@ -11,24 +11,26 @@ interface SearchInputProps {
 
 export default function SearchInput({ className }: SearchInputProps) {
   const { isMobile } = useResponsive();
-  const { performSearch } = useSearch();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [inputValue, setInputValue] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const isTypingRef = useRef(false);
+  const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const query = searchParams.get("q") || "";
-    setInputValue(query);
     
-    if (query.trim()) {
-      performSearch(query, false);
+    // Only update input value if user is not actively typing
+    if (!isTypingRef.current) {
+      setInputValue(query);
     }
     
-    if (query && inputRef.current) {
+    // Focus input if there's a query and user is not typing
+    if (query && inputRef.current && !isTypingRef.current) {
       inputRef.current.focus();
     }
-  }, [searchParams, performSearch]);
+  }, [searchParams]); // Removed performSearch from dependencies and the call
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -47,12 +49,28 @@ export default function SearchInput({ className }: SearchInputProps) {
 
   const handleInputChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setInputValue(e.target.value);
+      const newValue = e.target.value;
+      setInputValue(newValue);
+      
+      // Mark as typing and reset the typing timeout
+      isTypingRef.current = true;
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+      
+      // Clear typing flag after user stops typing for 1 second
+      typingTimeoutRef.current = setTimeout(() => {
+        isTypingRef.current = false;
+      }, 1000);
     },
     []
   );
 
   const handleClear = useCallback(() => {
+    isTypingRef.current = false;
+    if (typingTimeoutRef.current) {
+      clearTimeout(typingTimeoutRef.current);
+    }
     setInputValue("");
     router.push("/");
     if (inputRef.current) {
@@ -74,6 +92,15 @@ export default function SearchInput({ className }: SearchInputProps) {
     },
     [inputValue, router, handleClear]
   );
+
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className={`relative ${className}`}>

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useState, useCallback, useRef } from 'react';
+import React, { createContext, useContext, useState, useCallback, useRef, useMemo } from 'react';
 import { apiClient } from '../lib/api';
 import { Podcast } from '../interfaces/Podcast';
 
@@ -27,6 +27,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [currentHistoryIndex, setCurrentHistoryIndex] = useState(-1);
   const isNavigatingRef = useRef(false);
+  const lastSearchTermRef = useRef<string>("");
 
   const canGoBack = currentHistoryIndex > 0;
   const canGoForward = currentHistoryIndex < searchHistory.length - 1;
@@ -50,15 +51,23 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    const trimmedTerm = term.trim();
+    
+    // Prevent duplicate searches for the same term
+    if (lastSearchTermRef.current === trimmedTerm && !isNavigatingRef.current) {
+      return;
+    }
+
+    lastSearchTermRef.current = trimmedTerm;
     setIsLoading(true);
     setError(null);
 
     try {
-      const response = await apiClient.search(term);
+      const response = await apiClient.search(trimmedTerm);
       setSearchResults(response.podcasts);
       
       if (addToHistoryFlag && !isNavigatingRef.current) {
-        addToHistory(term);
+        addToHistory(trimmedTerm);
       }
       
       isNavigatingRef.current = false;
@@ -97,22 +106,37 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setError(null);
     setIsLoading(false);
     isNavigatingRef.current = false;
+    lastSearchTermRef.current = "";
   }, []);
 
+  const contextValue = useMemo(() => ({
+    searchResults,
+    isLoading,
+    error,
+    searchHistory,
+    currentHistoryIndex,
+    canGoBack,
+    canGoForward,
+    performSearch,
+    clearSearch,
+    goBackInHistory,
+    goForwardInHistory
+  }), [
+    searchResults,
+    isLoading,
+    error,
+    searchHistory,
+    currentHistoryIndex,
+    canGoBack,
+    canGoForward,
+    performSearch,
+    clearSearch,
+    goBackInHistory,
+    goForwardInHistory
+  ]);
+
   return (
-    <SearchContext.Provider value={{
-      searchResults,
-      isLoading,
-      error,
-      searchHistory,
-      currentHistoryIndex,
-      canGoBack,
-      canGoForward,
-      performSearch,
-      clearSearch,
-      goBackInHistory,
-      goForwardInHistory
-    }}>
+    <SearchContext.Provider value={contextValue}>
       {children}
     </SearchContext.Provider>
   );
