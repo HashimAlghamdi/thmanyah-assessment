@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSearch } from "../contexts/SearchContext";
 import { useResponsive } from "../contexts/ResponsiveContext";
 
 interface SearchInputProps {
@@ -20,12 +19,12 @@ export default function SearchInput({ className }: SearchInputProps) {
 
   useEffect(() => {
     const query = searchParams.get("q") || "";
-    
+
     // Only update input value if user is not actively typing
     if (!isTypingRef.current) {
       setInputValue(query);
     }
-    
+
     // Focus input if there's a query and user is not typing
     if (query && inputRef.current && !isTypingRef.current) {
       inputRef.current.focus();
@@ -51,13 +50,13 @@ export default function SearchInput({ className }: SearchInputProps) {
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newValue = e.target.value;
       setInputValue(newValue);
-      
+
       // Mark as typing and reset the typing timeout
       isTypingRef.current = true;
       if (typingTimeoutRef.current) {
         clearTimeout(typingTimeoutRef.current);
       }
-      
+
       // Clear typing flag after user stops typing for 1 second
       typingTimeoutRef.current = setTimeout(() => {
         isTypingRef.current = false;
